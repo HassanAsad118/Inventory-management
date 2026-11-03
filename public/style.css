@@ -561,3 +561,9 @@ button:disabled {
       box-shadow 0.15s;
   }
 }
+
+#account-panel > nav a[aria-current="location"] {
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+}

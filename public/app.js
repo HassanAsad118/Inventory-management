@@ -46,11 +46,91 @@ async function api(url, options = {}) {
   return data;
 }
 
+const sectionLinks = [...accountPanel.querySelectorAll('nav a[href^="#"]')];
+const sections = sectionLinks.map((link) => document.querySelector(link.hash));
+let selectedSection = null;
+
+function highlightSection(id) {
+  for (const link of sectionLinks) {
+    if (link.hash === "#" + id) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  }
+}
+
+function selectSection(section) {
+  selectedSection = section;
+  highlightSection(section.id);
+}
+
+function updateSectionOnScroll() {
+  if (accountPanel.hidden) return;
+  if (selectedSection) {
+    const bounds = selectedSection.getBoundingClientRect();
+    if (bounds.bottom > 0 && bounds.top < window.innerHeight) return;
+    selectedSection = null;
+  }
+
+  const readingLine = window.innerHeight * 0.25;
+  let current = sections[0];
+  for (const section of sections) {
+    const bounds = section.getBoundingClientRect();
+    if (bounds.top <= readingLine && bounds.bottom > readingLine) {
+      current = section;
+      break;
+    }
+    if (bounds.top <= readingLine) current = section;
+  }
+  if (
+    window.scrollY > 0 &&
+    window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 2
+  ) {
+    current = sections[sections.length - 1];
+  }
+  highlightSection(current.id);
+}
+
+function goToSection(section) {
+  section.scrollIntoView({ behavior: "instant", block: "start" });
+  selectSection(section);
+}
+
+function followSectionLink() {
+  const section = sections.find((item) => "#" + item.id === location.hash);
+  if (section && !accountPanel.hidden) goToSection(section);
+  else updateSectionOnScroll();
+}
+
+for (const link of sectionLinks) {
+  link.addEventListener("click", (event) => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)
+      return;
+    event.preventDefault();
+    if (location.hash !== link.hash) history.pushState(null, "", link.hash);
+    followSectionLink();
+  });
+}
+
+for (const event of ["wheel", "touchstart", "pointerdown", "keydown"]) {
+  window.addEventListener(
+    event,
+    () => {
+      selectedSection = null;
+    },
+    { passive: true, capture: true },
+  );
+}
+window.addEventListener("scroll", updateSectionOnScroll, { passive: true });
+window.addEventListener("resize", updateSectionOnScroll);
+window.addEventListener("hashchange", followSectionLink);
+
 function showUser(user) {
   authPanel.hidden = true;
   accountPanel.hidden = false;
   document.querySelector("#user-name").textContent = user.name;
   showMessage("");
+  selectedSection = null;
+  followSectionLink();
   loadDashboard();
 }
 
@@ -210,7 +290,7 @@ productForm.addEventListener("submit", async (event) => {
       body: JSON.stringify(body),
     });
     resetEditor();
-    document.querySelector("#catalog").focus();
+    focusCatalog();
     showMessage(id ? "Product updated." : "Product added.");
     await loadDashboard();
   } catch (error) {
@@ -226,8 +306,14 @@ function resetEditor() {
   productMessage.textContent = "";
   productForm.elements.productId.value = "";
 }
+function focusCatalog() {
+  const catalog = document.querySelector("#catalog");
+  goToSection(catalog);
+  catalog.focus({ preventScroll: true });
+}
+
 function openEditor() {
-  document.querySelector("#editor").scrollIntoView();
+  goToSection(document.querySelector("#editor"));
   productForm.elements.name.focus({ preventScroll: true });
 }
 document.querySelector("#new-product").onclick = () => {
@@ -236,7 +322,7 @@ document.querySelector("#new-product").onclick = () => {
 };
 document.querySelector("#cancel-edit").onclick = () => {
   resetEditor();
-  document.querySelector("#catalog").focus();
+  focusCatalog();
 };
 document.querySelector("#restock").onclick = () => {
   document.querySelector("#search").value = "";
@@ -245,7 +331,7 @@ document.querySelector("#restock").onclick = () => {
   document.querySelector("#sort").value = "quantity";
   currentPage = 1;
   renderProducts();
-  document.querySelector("#catalog").focus();
+  focusCatalog();
 };
 
 document
