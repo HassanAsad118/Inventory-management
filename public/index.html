@@ -23,34 +23,19 @@
 
       <section id="auth-panel">
         <div class="auth-cover">
-          <p class="eyebrow">INVENTORY MANAGEMENT</p>
           <h2>Stockroom</h2>
-          <svg
-            viewBox="0 0 280 150"
-            aria-hidden="true"
-            fill="none"
-            stroke-linejoin="round"
-          >
-            <g stroke="#91b5ee" stroke-width="2">
-              <path d="M12 74h256M12 140h256M20 16v130M260 16v130" />
-              <g fill="#38577d">
-                <rect x="30" y="40" width="74" height="32" />
-                <rect x="112" y="25" width="54" height="47" />
-                <rect x="175" y="40" width="68" height="32" />
-                <rect x="32" y="96" width="56" height="42" />
-                <rect x="97" y="96" width="59" height="42" />
-                <rect x="166" y="85" width="76" height="53" />
-              </g>
-              <path
-                d="M63 40v12h9V40m63-15v16h9V25m59 15v11h9V40M55 96v13h9V96m58 0v13h9V96m66-11v16h9V85"
-              />
-            </g>
-          </svg>
+          <p>Products, quantities and stock movements.</p>
+          <img
+            src="/cartons.svg"
+            alt=""
+            class="carton-print"
+            width="580"
+            height="370"
+          />
         </div>
         <div class="auth-content">
-          <p class="eyebrow">ACCOUNT ACCESS</p>
-          <h2>Your inventory workspace</h2>
-          <p>Sign in to track products and see what needs restocking.</p>
+          <h2>Account access</h2>
+          <p>Open your inventory workspace.</p>
           <div class="tabs">
             <button id="show-login" type="button">Log in</button>
             <button id="show-register" type="button">Create account</button>
@@ -144,12 +129,11 @@
         <section id="overview">
           <div class="dashboard-header">
             <div>
-              <p class="eyebrow">STOCK OVERVIEW</p>
-              <h2>
-                Welcome,
+              <h2>Stock overview</h2>
+              <p>
+                Workspace of
                 <span id="user-name"></span>
-              </h2>
-              <p>Your inventory at a glance.</p>
+              </p>
             </div>
             <button id="logout-button" type="button" class="secondary">
               Log out
@@ -166,7 +150,7 @@
               <strong id="stat-units">0</strong>
             </article>
             <article>
-              <span>Low stock</span>
+              <span>Need restocking</span>
               <strong id="stat-low">0</strong>
             </article>
             <article>
@@ -175,15 +159,38 @@
             </article>
           </div>
 
-          <button id="restock" class="secondary">
-            Review low stock &rarr;
-          </button>
+          <div class="availability">
+            <div class="availability-data">
+              <h3>Stock availability</h3>
+              <div class="stock-meter" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+              <div class="stock-key">
+                <span>
+                  In stock
+                  <b>0</b>
+                </span>
+                <span>
+                  Low
+                  <b>0</b>
+                </span>
+                <span>
+                  Empty
+                  <b>0</b>
+                </span>
+              </div>
+            </div>
+            <button id="restock" class="secondary">
+              Review low stock &rarr;
+            </button>
+          </div>
         </section>
         <section id="catalog" tabindex="-1">
           <div class="dashboard-header">
             <div>
-              <p class="eyebrow">STOCK REGISTER</p>
-              <h2>Inventory</h2>
+              <h2>Stock register</h2>
             </div>
             <button id="new-product">+ Add product</button>
           </div>
@@ -226,8 +233,8 @@
                   <th>Name</th>
                   <th>SKU</th>
                   <th>Category</th>
-                  <th>Qty</th>
-                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Unit price</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -249,7 +256,6 @@
           </div>
         </section>
         <section id="editor">
-          <p class="eyebrow">PRODUCT DETAILS</p>
           <h2 id="editor-title">Add a product</h2>
           <form id="product-form" class="product-form">
             <input name="productId" type="hidden" />
@@ -284,7 +290,6 @@
           <p id="product-message" role="status" aria-live="polite"></p>
         </section>
         <section id="history">
-          <p class="eyebrow">CHANGE LOG</p>
           <h2>Recent activity</h2>
           <ul id="activity-list"></ul>
         </section>

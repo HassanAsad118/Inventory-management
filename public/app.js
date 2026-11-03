@@ -197,9 +197,17 @@ async function loadDashboard() {
       (sum, p) => sum + p.quantity,
       0,
     );
-    document.querySelector("#stat-low").textContent = products.filter(
-      (p) => p.quantity <= 5,
+    const empty = products.filter((product) => product.quantity === 0).length;
+    const low = products.filter(
+      (product) => product.quantity > 0 && product.quantity <= 5,
     ).length;
+    document.querySelector("#stat-low").textContent = low + empty;
+    const counts = [products.length - low - empty, low, empty];
+    const bars = document.querySelectorAll(".stock-meter i");
+    document.querySelectorAll(".stock-key b").forEach((label, index) => {
+      label.textContent = counts[index];
+      bars[index].style.flexGrow = counts[index];
+    });
     document.querySelector("#stat-value").textContent = money.format(
       products.reduce((sum, p) => sum + p.quantity * p.price, 0),
     );
@@ -404,6 +412,12 @@ document.querySelector("#logout-button").addEventListener("click", async () => {
     document
       .querySelectorAll(".stats strong")
       .forEach((stat) => (stat.textContent = "0"));
+    document
+      .querySelectorAll(".stock-meter i")
+      .forEach((bar) => (bar.style.flexGrow = 0));
+    document
+      .querySelectorAll(".stock-key b")
+      .forEach((label) => (label.textContent = "0"));
     registerForm.reset();
     accountPanel.hidden = true;
     authPanel.hidden = false;
