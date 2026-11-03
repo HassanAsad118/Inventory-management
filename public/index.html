@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devixo Inventory</title>
+  <link rel="stylesheet" href="/style.css" />
+  <script src="/app.js" defer></script>
+</head>
+
+<body>
+  <main class="card">
+    <h1>Devixo Inventory</h1>
+    <p class="intro">Sign in to manage your stock.</p>
+
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <section id="auth-panel">
+      <div class="tabs">
+        <button id="show-login" type="button">Log in</button>
+        <button id="show-register" type="button">Create account</button>
+      </div>
+
+      <form id="login-form">
+        <label>Email<input name="email" type="email" required /></label>
+        <label>Password<input name="password" type="password" required /></label>
+        <button type="submit">Log in</button>
+      </form>
+
+      <form id="register-form" hidden>
+        <label>Name<input name="name" required /></label>
+        <label>Email<input name="email" type="email" required /></label>
+        <label>Password<input name="password" type="password" minlength="8" required /></label>
+        <button type="submit">Create account</button>
+      </form>
+    </section>
+
+    <section id="account-panel" hidden>
+      <div class="dashboard-header">
+        <div>
+          <h2>Welcome, <span id="user-name"></span></h2>
+          <p>Your inventory at a glance.</p>
+        </div>
+        <button id="logout-button" type="button" class="secondary">Log out</button>
+      </div>
+
+      <div class="stats">
+        <article><span>Products</span><strong id="stat-products">0</strong></article>
+        <article><span>Units in stock</span><strong id="stat-units">0</strong></article>
+        <article><span>Low stock</span><strong id="stat-low">0</strong></article>
+        <article><span>Inventory value</span><strong id="stat-value">PKR 0</strong></article>
+      </div>
+
+      <h2>Products</h2>
+      <form id="product-form" class="product-form">
+        <input name="productId" type="hidden" />
+        <label>Product name<input name="name" required /></label>
+        <label>SKU<input name="sku" required /></label>
+        <label>Category<input name="category" required /></label>
+        <label>Quantity<input name="quantity" type="number" min="0" step="1" required /></label>
+        <label>Price (PKR)<input name="price" type="number" min="0" step="0.01" required /></label>
+        <div class="form-actions">
+          <button type="submit" id="save-product">Add product</button>
+          <button type="button" id="cancel-edit" class="secondary" hidden>Cancel edit</button>
+        </div>
+      </form>
+
+      <p id="product-message" role="status" aria-live="polite"></p>
+
+      <div class="filters">
+        <label>Search<input id="search" placeholder="Name or SKU" /></label>
+        <label>Category<select id="category-filter">
+            <option value="">All categories</option>
+          </select></label>
+        <label>Stock<select id="stock-filter">
+            <option value="">All stock</option>
+            <option value="low">Low stock (5 or fewer)</option>
+          </select></label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>SKU</th>
+              <th>Category</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="product-rows"></tbody>
+        </table>
+      </div>
+
+      <h2>Recent activity</h2>
+      <ul id="activity-list"></ul>
+    </section>
+  </main>
+</body>
+
+</html>
