@@ -15,21 +15,42 @@ function regenerateSession(req) {
 
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password } = req.body || {};
 
-    if (!name?.trim() || !email?.trim() || !password) {
-      return res.status(400).json({ error: "Name, email, and password are required." });
+    if (
+      typeof name !== "string" ||
+      !name.trim() ||
+      typeof email !== "string" ||
+      !email.trim() ||
+      typeof password !== "string" ||
+      !password
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Name, email, and password are required." });
     }
 
     if (password.length < 8) {
-      return res.status(400).json({ error: "Password must be at least 8 characters." });
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters." });
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return res.status(400).json({ error: "Enter a valid email address." });
+    }
+    if (Buffer.byteLength(password, "utf8") > 72) {
+      return res
+        .status(400)
+        .json({ error: "Password exceeds the 72-byte limit." });
+    }
     const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
-      return res.status(409).json({ error: "An account with that email already exists." });
+      return res
+        .status(409)
+        .json({ error: "An account with that email already exists." });
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
@@ -48,6 +69,10 @@ router.post("/register", async (req, res) => {
       email: user.email,
     });
   } catch (error) {
+    if (error.code === 11000)
+      return res
+        .status(409)
+        .json({ error: "An account with that email already exists." });
     console.error(error);
     res.status(500).json({ error: "Could not create account." });
   }
@@ -55,10 +80,17 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
-    if (!email?.trim() || !password) {
-      return res.status(400).json({ error: "Email and password are required." });
+    if (
+      typeof email !== "string" ||
+      !email.trim() ||
+      typeof password !== "string" ||
+      !password
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Email and password are required." });
     }
 
     const user = await User.findOne({ email: email.trim().toLowerCase() });

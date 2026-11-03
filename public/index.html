@@ -1,104 +1,294 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Inventory Management</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inventory Management</title>
-  <link rel="stylesheet" href="/style.css" />
-  <script src="/app.js" defer></script>
-</head>
-
-<body>
-  <main class="card">
-    <h1>Inventory Management</h1>
-    <p class="intro">Sign in to manage your stock.</p>
-
-    <p id="message" role="status" aria-live="polite"></p>
-
-    <section id="auth-panel">
-      <div class="tabs">
-        <button id="show-login" type="button">Log in</button>
-        <button id="show-register" type="button">Create account</button>
-      </div>
-
-      <form id="login-form">
-        <label>Email<input name="email" type="email" required /></label>
-        <label>Password<input name="password" type="password" required /></label>
-        <button type="submit">Log in</button>
-      </form>
-
-      <form id="register-form" hidden>
-        <label>Name<input name="name" required /></label>
-        <label>Email<input name="email" type="email" required /></label>
-        <label>Password<input name="password" type="password" minlength="8" required /></label>
-        <button type="submit">Create account</button>
-      </form>
-    </section>
-
-    <section id="account-panel" hidden>
-      <div class="dashboard-header">
-        <div>
-          <h2>Welcome, <span id="user-name"></span></h2>
-          <p>Your inventory at a glance.</p>
+  <body>
+    <main class="card">
+      <header class="mast">
+        <div class="brand">
+          <img src="/favicon.svg" alt="" width="44" height="44" />
+          <h1>Inventory Management</h1>
         </div>
-        <button id="logout-button" type="button" class="secondary">Log out</button>
-      </div>
+        <button id="theme" class="secondary" type="button">Dark mode</button>
+      </header>
 
-      <div class="stats">
-        <article><span>Products</span><strong id="stat-products">0</strong></article>
-        <article><span>Units in stock</span><strong id="stat-units">0</strong></article>
-        <article><span>Low stock</span><strong id="stat-low">0</strong></article>
-        <article><span>Inventory value</span><strong id="stat-value">PKR 0</strong></article>
-      </div>
+      <p id="message" role="status" aria-live="polite"></p>
 
-      <h2>Products</h2>
-      <form id="product-form" class="product-form">
-        <input name="productId" type="hidden" />
-        <label>Product name<input name="name" required /></label>
-        <label>SKU<input name="sku" required /></label>
-        <label>Category<input name="category" required /></label>
-        <label>Quantity<input name="quantity" type="number" min="0" step="1" required /></label>
-        <label>Price (PKR)<input name="price" type="number" min="0" step="0.01" required /></label>
-        <div class="form-actions">
-          <button type="submit" id="save-product">Add product</button>
-          <button type="button" id="cancel-edit" class="secondary" hidden>Cancel edit</button>
+      <section id="auth-panel">
+        <div class="auth-cover">
+          <p class="eyebrow">INVENTORY MANAGEMENT</p>
+          <h2>Stockroom</h2>
+          <svg
+            viewBox="0 0 280 150"
+            aria-hidden="true"
+            fill="none"
+            stroke-linejoin="round"
+          >
+            <g stroke="#91b5ee" stroke-width="2">
+              <path d="M12 74h256M12 140h256M20 16v130M260 16v130" />
+              <g fill="#38577d">
+                <rect x="30" y="40" width="74" height="32" />
+                <rect x="112" y="25" width="54" height="47" />
+                <rect x="175" y="40" width="68" height="32" />
+                <rect x="32" y="96" width="56" height="42" />
+                <rect x="97" y="96" width="59" height="42" />
+                <rect x="166" y="85" width="76" height="53" />
+              </g>
+              <path
+                d="M63 40v12h9V40m63-15v16h9V25m59 15v11h9V40M55 96v13h9V96m58 0v13h9V96m66-11v16h9V85"
+              />
+            </g>
+          </svg>
         </div>
-      </form>
+        <div class="auth-content">
+          <p class="eyebrow">ACCOUNT ACCESS</p>
+          <h2>Your inventory workspace</h2>
+          <p>Sign in to track products and see what needs restocking.</p>
+          <div class="tabs">
+            <button id="show-login" type="button">Log in</button>
+            <button id="show-register" type="button">Create account</button>
+          </div>
 
-      <p id="product-message" role="status" aria-live="polite"></p>
+          <form id="login-form">
+            <label>
+              Email
+              <input name="email" type="email" required />
+            </label>
+            <label>
+              Password
+              <input name="password" type="password" required />
+            </label>
+            <button type="submit">Log in</button>
+          </form>
 
-      <div class="filters">
-        <label>Search<input id="search" placeholder="Name or SKU" /></label>
-        <label>Category<select id="category-filter">
-            <option value="">All categories</option>
-          </select></label>
-        <label>Stock<select id="stock-filter">
-            <option value="">All stock</option>
-            <option value="low">Low stock (5 or fewer)</option>
-          </select></label>
-      </div>
+          <form id="register-form" hidden>
+            <label>
+              Name
+              <input name="name" required />
+            </label>
+            <label>
+              Email
+              <input name="email" type="email" required />
+            </label>
+            <label>
+              Password
+              <input name="password" type="password" minlength="8" required />
+            </label>
+            <button type="submit">Create account</button>
+          </form>
+        </div>
+      </section>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>SKU</th>
-              <th>Category</th>
-              <th>Qty</th>
-              <th>Price</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="product-rows"></tbody>
-        </table>
-      </div>
+      <section id="account-panel" hidden>
+        <nav aria-label="Dashboard sections">
+          <a href="#overview">
+            <svg
+              class="icon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <path d="M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z" />
+            </svg>
+            Overview
+          </a>
+          <a href="#catalog">
+            <svg
+              class="icon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <path d="M3 6h18v4H3z M5 10v11h14V10 M9 14h6" />
+            </svg>
+            Inventory
+          </a>
+          <a href="#editor">
+            <svg
+              class="icon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <path d="m4 16 12-12 4 4L8 20H4z M14 6l4 4" />
+            </svg>
+            Product details
+          </a>
+          <a href="#history">
+            <svg
+              class="icon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <path d="M3 12a9 9 0 1 0 3-7 M3 4v6h6 M12 7v6l4 2" />
+            </svg>
+            Activity
+          </a>
+        </nav>
+        <section id="overview">
+          <div class="dashboard-header">
+            <div>
+              <p class="eyebrow">STOCK OVERVIEW</p>
+              <h2>
+                Welcome,
+                <span id="user-name"></span>
+              </h2>
+              <p>Your inventory at a glance.</p>
+            </div>
+            <button id="logout-button" type="button" class="secondary">
+              Log out
+            </button>
+          </div>
 
-      <h2>Recent activity</h2>
-      <ul id="activity-list"></ul>
-    </section>
-  </main>
-</body>
+          <div class="stats">
+            <article>
+              <span>Products</span>
+              <strong id="stat-products">0</strong>
+            </article>
+            <article>
+              <span>Units in stock</span>
+              <strong id="stat-units">0</strong>
+            </article>
+            <article>
+              <span>Low stock</span>
+              <strong id="stat-low">0</strong>
+            </article>
+            <article>
+              <span>Inventory value</span>
+              <strong id="stat-value">PKR 0</strong>
+            </article>
+          </div>
 
+          <button id="restock" class="secondary">
+            Review low stock &rarr;
+          </button>
+        </section>
+        <section id="catalog" tabindex="-1">
+          <div class="dashboard-header">
+            <div>
+              <p class="eyebrow">STOCK REGISTER</p>
+              <h2>Inventory</h2>
+            </div>
+            <button id="new-product">+ Add product</button>
+          </div>
+          <div class="filters">
+            <label>
+              Search
+              <input id="search" placeholder="Name or SKU" />
+            </label>
+            <label>
+              Category
+              <select id="category-filter">
+                <option value="">All categories</option>
+              </select>
+            </label>
+            <label>
+              Stock
+              <select id="stock-filter">
+                <option value="">All stock</option>
+                <option value="empty">Out of stock</option>
+                <option value="low">Low stock (5 or fewer)</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="results">
+            <span id="count" aria-live="polite"></span>
+            <label>
+              Sort by
+              <select id="sort">
+                <option value="recent">Newest first</option>
+                <option value="quantity">Lowest quantity</option>
+                <option value="value">Highest stock value</option>
+              </select>
+            </label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>SKU</th>
+                  <th>Category</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="product-rows"></tbody>
+            </table>
+          </div>
+          <div
+            class="pagination"
+            id="pagination"
+            role="group"
+            aria-label="Inventory pages"
+            hidden
+          >
+            <button type="button" class="secondary" id="prev-page">
+              Previous
+            </button>
+            <span id="page-summary" aria-live="polite"></span>
+            <button type="button" class="secondary" id="next-page">Next</button>
+          </div>
+        </section>
+        <section id="editor">
+          <p class="eyebrow">PRODUCT DETAILS</p>
+          <h2 id="editor-title">Add a product</h2>
+          <form id="product-form" class="product-form">
+            <input name="productId" type="hidden" />
+            <label>
+              Product name
+              <input name="name" required />
+            </label>
+            <label>
+              SKU
+              <input name="sku" required />
+            </label>
+            <label>
+              Category
+              <input name="category" required />
+            </label>
+            <label>
+              Quantity
+              <input name="quantity" type="number" min="0" step="1" required />
+            </label>
+            <label>
+              Price (PKR)
+              <input name="price" type="number" min="0" step="0.01" required />
+            </label>
+            <div class="form-actions">
+              <button type="submit" id="save-product">Add product</button>
+              <button type="button" id="cancel-edit" class="secondary" hidden>
+                Cancel edit
+              </button>
+            </div>
+          </form>
+
+          <p id="product-message" role="status" aria-live="polite"></p>
+        </section>
+        <section id="history">
+          <p class="eyebrow">CHANGE LOG</p>
+          <h2>Recent activity</h2>
+          <ul id="activity-list"></ul>
+        </section>
+      </section>
+    </main>
+  </body>
 </html>
