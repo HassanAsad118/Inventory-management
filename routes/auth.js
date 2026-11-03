@@ -87,7 +87,7 @@ router.post("/logout", (req, res) => {
       return res.status(500).json({ error: "Could not log out." });
     }
 
-    res.clearCookie("devixo.sid", {
+    res.clearCookie("inventory.sid", {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",

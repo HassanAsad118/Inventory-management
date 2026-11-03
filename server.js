@@ -22,7 +22,7 @@ app.use(express.json({ limit: "10kb" }));
 
 app.use(
     session({
-        name: "devixo.sid",
+        name: "inventory.sid",
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
