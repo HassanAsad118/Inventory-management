@@ -133,7 +133,7 @@ router.put("/:id", async (req, res) => {
     const product = await Product.findOneAndUpdate(
       { _id: req.params.id, owner: req.session.userId },
       productFields(req.body),
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
 
     if (!product) {

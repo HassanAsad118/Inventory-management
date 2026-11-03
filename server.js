@@ -34,6 +34,7 @@ function getSessionMiddleware() {
           store: MongoStore.create({
             client,
             collectionName: "sessions",
+            touchAfter: 60,
           }),
           cookie: {
             httpOnly: true,

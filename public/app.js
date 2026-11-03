@@ -57,11 +57,6 @@ function highlightSection(id) {
   }
 }
 
-function selectSection(section) {
-  selectedSection = section;
-  highlightSection(section.id);
-}
-
 function updateSectionOnScroll() {
   if (accountPanel.hidden) return;
   if (selectedSection) {
@@ -92,7 +87,8 @@ function updateSectionOnScroll() {
 
 function goToSection(section) {
   section.scrollIntoView({ behavior: "instant", block: "start" });
-  selectSection(section);
+  selectedSection = section;
+  highlightSection(section.id);
 }
 
 function followSectionLink() {
@@ -134,6 +130,12 @@ function showUser(user) {
   loadDashboard();
 }
 
+function stockBadge(quantity) {
+  if (quantity === 0) return '<small class="badge empty">Out of stock</small>';
+  if (quantity <= 5) return '<small class="badge low">Low stock</small>';
+  return '<small class="badge">In stock</small>';
+}
+
 function renderProducts() {
   const search = document.querySelector("#search").value.trim().toLowerCase();
   const category = document.querySelector("#category-filter").value;
@@ -171,7 +173,7 @@ function renderProducts() {
       <td>${escapeHTML(p.name)}</td>
       <td>${escapeHTML(p.sku)}</td>
       <td>${escapeHTML(p.category)}</td>
-      <td>${p.quantity} <small class="badge ${p.quantity === 0 ? "empty" : p.quantity <= 5 ? "low" : ""}">${p.quantity === 0 ? "Out of stock" : p.quantity <= 5 ? "Low stock" : "In stock"}</small></td>
+      <td>${p.quantity} ${stockBadge(p.quantity)}</td>
       <td>${money.format(p.price)}</td>
       <td>
         <button data-action="edit" data-id="${p._id}">Edit</button>
@@ -230,47 +232,41 @@ async function loadDashboard() {
   }
 }
 
-async function sendForm(url, form) {
-  const body = Object.fromEntries(new FormData(form));
-  return api(url, {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
+const loginForm = document.querySelector("#login-form");
+const registerForm = document.querySelector("#register-form");
+
+function showAuthForm(form) {
+  loginForm.hidden = form !== loginForm;
+  registerForm.hidden = form !== registerForm;
+  showMessage("");
 }
 
-document.querySelector("#show-login").addEventListener("click", () => {
-  document.querySelector("#login-form").hidden = false;
-  document.querySelector("#register-form").hidden = true;
-  showMessage("");
-});
+document.querySelector("#show-login").onclick = () => showAuthForm(loginForm);
+document.querySelector("#show-register").onclick = () =>
+  showAuthForm(registerForm);
 
-document.querySelector("#show-register").addEventListener("click", () => {
-  document.querySelector("#login-form").hidden = true;
-  document.querySelector("#register-form").hidden = false;
-  showMessage("");
-});
-
-document
-  .querySelector("#login-form")
-  .addEventListener("submit", async (event) => {
+for (const [form, action] of [
+  [loginForm, "login"],
+  [registerForm, "register"],
+]) {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    const submit = form.querySelector('button[type="submit"]');
+    submit.disabled = true;
     try {
-      showUser(await sendForm("/api/auth/login", event.currentTarget));
+      const user = await api("/api/auth/" + action, {
+        method: "POST",
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      form.reset();
+      showUser(user);
     } catch (error) {
       showMessage(error.message, true);
+    } finally {
+      submit.disabled = false;
     }
   });
-
-document
-  .querySelector("#register-form")
-  .addEventListener("submit", async (event) => {
-    event.preventDefault();
-    try {
-      showUser(await sendForm("/api/auth/register", event.currentTarget));
-    } catch (error) {
-      showMessage(error.message, true);
-    }
-  });
+}
 
 productForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -366,7 +362,7 @@ document
         showMessage("Product deleted.");
         await loadDashboard();
       } catch (error) {
-        productMessage.textContent = error.message;
+        showMessage(error.message, true);
       }
     }
   });
@@ -408,13 +404,14 @@ document.querySelector("#logout-button").addEventListener("click", async () => {
     document
       .querySelectorAll(".stats strong")
       .forEach((stat) => (stat.textContent = "0"));
-    document.querySelector("#register-form").reset();
+    registerForm.reset();
     accountPanel.hidden = true;
     authPanel.hidden = false;
-    document.querySelector("#login-form").reset();
+    loginForm.reset();
+    showAuthForm(loginForm);
     showMessage("You have logged out.");
   } catch (error) {
-    productMessage.textContent = error.message;
+    showMessage(error.message, true);
   }
 });
 
