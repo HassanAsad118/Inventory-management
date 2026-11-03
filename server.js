@@ -58,6 +58,7 @@ app.use(["/api/auth", "/api/products"], async (req, res, next) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.get("/", (req, res) => res.redirect("/index.html"));
 app.use(express.static("public"));
 
 app.get("/api/health", (req, res) => {
