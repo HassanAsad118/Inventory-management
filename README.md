@@ -26,10 +26,10 @@ A stock register built for Task 04 of the Devixo Solutions Web Development Inter
 
 | View | Screenshot |
 | --- | --- |
-| Sign-in page | *Add sign-in screenshot here.* |
-| Dashboard and stock register | *Add dashboard screenshot here.* |
-| Low-stock filter | *Add low-stock screenshot here.* |
-| Mobile dashboard in dark mode | *Add mobile screenshot here.* |
+| Sign-in page | ![Login page](screenshots/login.png) |
+| Dashboard and stock register | ![Dashboard showing inventory statistics](screenshots/dashboard.png) |
+| Low-stock filter | ![Inventory table with search and filters](screenshots/inventory.png) |
+| Mobile dashboard in dark mode | ![Mobile Dark mode](screenshots/mobile.png) |
 
 <!-- Save images under docs/screenshots/ and replace a placeholder with Markdown such as ![Dashboard and stock register](docs/screenshots/dashboard.png). -->
 
